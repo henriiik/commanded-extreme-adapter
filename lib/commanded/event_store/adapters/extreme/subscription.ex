@@ -146,16 +146,8 @@ defmodule Commanded.EventStore.Adapters.Extreme.Subscription do
     Logger.debug(fn -> describe(state) <> " received response: #{inspect(response_map)}" end)
 
     event_id =
-      case Map.get(response_map, :link, nil) do
-        nil -> response_map.event.id
-        link -> link.id
-      end
+      response_map.event.id
       |> Spear.Uuid.from_proto()
-
-    Logger.debug(fn ->
-      describe(state) <>
-        " event_id: #{event_id}, response.event.id: #{inspect(response_map.event.id)}"
-    end)
 
     state =
       if event_type != nil and "$" != String.first(event_type) do
